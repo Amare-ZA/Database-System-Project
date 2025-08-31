@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Messages</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'MainInterface/styles.css' %}">
+</head>
+<body>
+
+    <h1>Messages</h1>
+
+    <ul>
+        {% for msg in messages %}
+            <li>
+                <strong>{{ msg.name }}</strong>: {{ msg.text }} <br>
+                <small>{{ msg.created_at }}</small>
+            </li>
+        {% empty %}
+            <li>No messages yet.</li>
+        {% endfor %}
+    </ul>
+
+</body>
+</html>
