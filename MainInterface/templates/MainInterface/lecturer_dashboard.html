@@ -1,0 +1,164 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lecturer Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            min-height: 100vh;
+        }
+        .dashboard-container {
+            padding-top: 2rem;
+            padding-bottom: 2rem;
+        }
+        .module-card {
+            margin-bottom: 1.5rem;
+            border-left: 4px solid #ffc107;
+        }
+        .student-table {
+            font-size: 0.9rem;
+        }
+        .table-hover tbody tr:hover {
+            background-color: rgba(255, 193, 7, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-dark bg-warning shadow-sm">
+        <div class="container-fluid">
+            <span class="navbar-brand mb-0 h1">
+                <img src="https://via.placeholder.com/40x40/ffc107/000000?text=LP" alt="Logo" class="d-inline-block align-text-top me-2">
+                Lecturer Dashboard
+            </span>
+        </div>
+    </nav>
+
+    <div class="container dashboard-container">
+        <!-- Welcome Message -->
+        <div class="row mb-4">
+            <div class="col-12 text-center">
+                <h2>Welcome, Lecturer!</h2>
+                <p class="lead text-muted">Manage your modules and student assessments</p>
+            </div>
+        </div>
+
+        <!-- Module Selection -->
+        <div class="row mb-4">
+            <div class="col-md-8 mx-auto">
+                <div class="card">
+                    <div class="card-header bg-white">
+                        <h5 class="mb-0">📚 Select Module to Manage</h5>
+                    </div>
+                    <div class="card-body">
+                        <select class="form-select" id="moduleSelect">
+                            <option selected disabled>-- Choose a Module --</option>
+                            <option value="module1">DBS501 - Database Systems</option>
+                            <option value="module2">WEB601 - Web Development</option>
+                            <option value="module3">NET501 - Networking Fundamentals</option>
+                        </select>
+                        <p class="text-muted mt-2 small">Select a module to view enrolled students and enter marks.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Enrolled Students Section (Initially Hidden) -->
+        <div class="row mb-4" id="studentsSection" style="display: none;">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">👥 Enrolled Students</h5>
+                        <span class="badge bg-warning text-dark" id="studentCount">0 students</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover student-table">
+                                <thead>
+                                    <tr>
+                                        <th>Student ID</th>
+                                        <th>Full Name</th>
+                                        <th>Current Mark</th>
+                                        <th>Enter/Update Mark</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="studentsTableBody">
+                                    <!-- Student data will be dynamically inserted here by backend -->
+                                    <tr>
+                                        <td colspan="5" class="text-center text-muted py-4">
+                                            <div class="spinner-border text-warning" role="status">
+                                                <span class="visually-hidden">Loading...</span>
+                                            </div>
+                                            <p class="mt-2 mb-0">No student data available yet. Backend integration required.</p>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="row">
+            <div class="col-md-6 mx-auto">
+                <div class="card">
+                    <div class="card-header bg-white">
+                        <h5 class="mb-0">⚡ Quick Actions</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-grid gap-2">
+                            <button class="btn btn-outline-warning" onclick="alert('Feature coming soon: Download student list as CSV')">
+                                📥 Download Student List
+                            </button>
+                            <button class="btn btn-outline-warning" onclick="alert('Feature coming soon: View overall class performance')">
+                                📊 View Class Statistics
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Simple JavaScript for Demo -->
+    <script>
+        // Simple demo functionality
+        document.getElementById('moduleSelect').addEventListener('change', function() {
+            const studentsSection = document.getElementById('studentsSection');
+            const studentCount = document.getElementById('studentCount');
+            
+            if (this.value) {
+                studentsSection.style.display = 'block';
+                // Simulate loading students (would be replaced by backend API call)
+                setTimeout(() => {
+                    studentCount.textContent = '24 students'; // Example count
+                }, 500);
+            } else {
+                studentsSection.style.display = 'none';
+            }
+        });
+
+        // Function to simulate saving a mark (would be replaced by backend API call)
+        function saveMark(studentId) {
+            const markInput = document.querySelector(`input[data-student="${studentId}"]`);
+            const mark = markInput.value;
+            
+            if (mark && mark >= 0 && mark <= 100) {
+                alert(`Mark ${mark}% saved for Student ${studentId} (This would connect to backend)`);
+                // Here you would typically send data to server using fetch() API
+            } else {
+                alert('Please enter a valid mark between 0 and 100');
+            }
+        }
+    </script>
+</body>
+</html>
