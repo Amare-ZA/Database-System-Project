@@ -1,0 +1,278 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            min-height: 100vh;
+        }
+        .dashboard-container {
+            padding-top: 2rem;
+            padding-bottom: 2rem;
+        }
+        .admin-card {
+            transition: transform 0.2s, box-shadow 0.2s;
+            height: 100%;
+            border-left: 4px solid #dc3545;
+        }
+        .admin-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 .5rem 1rem rgba(220, 53, 69, 0.15);
+        }
+        .card-icon {
+            font-size: 2rem;
+            color: #dc3545;
+            margin-bottom: 1rem;
+        }
+        .stats-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #dc3545;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-dark bg-danger shadow-sm">
+        <div class="container-fluid">
+            <span class="navbar-brand mb-0 h1">
+                <i class="bi bi-shield-lock-fill me-2"></i>
+                Admin Dashboard - Registrar/HOD
+            </span>
+            <span class="navbar-text">
+                <i class="bi bi-person-circle me-1"></i>System Administrator
+            </span>
+        </div>
+    </nav>
+
+    <div class="container dashboard-container">
+        <!-- Welcome and Stats -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card bg-light border-0">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-8">
+                                <h2>Welcome, Administrator!</h2>
+                                <p class="lead text-muted">Full system control and management panel</p>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="row text-center">
+                                    <div class="col-4">
+                                        <div class="stats-number">1,254</div>
+                                        <small class="text-muted">Students</small>
+                                    </div>
+                                    <div class="col-4">
+                                        <div class="stats-number">48</div>
+                                        <small class="text-muted">Lecturers</small>
+                                    </div>
+                                    <div class="col-4">
+                                        <div class="stats-number">86</div>
+                                        <small class="text-muted">Modules</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Management Cards -->
+        <div class="row g-4">
+            <!-- Student Management -->
+            <div class="col-md-6 col-lg-4">
+                <div class="card admin-card">
+                    <div class="card-body text-center">
+                        <div class="card-icon">
+                            <i class="bi bi-people-fill"></i>
+                        </div>
+                        <h5 class="card-title">Student Management</h5>
+                        <p class="card-text">Add, update, or delete student accounts and records</p>
+                        <div class="d-grid gap-2">
+                            <button class="btn btn-outline-danger" onclick="alert('Add Student feature - Backend integration required')">
+                                <i class="bi bi-person-plus"></i> Add Student
+                            </button>
+                            <button class="btn btn-outline-danger" onclick="alert('Manage Students feature - Backend integration required')">
+                                <i class="bi bi-list-ul"></i> Manage Students
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Module Management -->
+            <div class="col-md-6 col-lg-4">
+                <div class="card admin-card">
+                    <div class="card-body text-center">
+                        <div class="card-icon">
+                            <i class="bi bi-journal-bookmark-fill"></i>
+                        </div>
+                        <h5 class="card-title">Module Management</h5>
+                        <p class="card-text">Manage course offerings, credit hours, and module details</p>
+                        <div class="d-grid gap-2">
+                            <button class="btn btn-outline-danger" onclick="alert('Create Module feature - Backend integration required')">
+                                <i class="bi bi-plus-circle"></i> Create Module
+                            </button>
+                            <button class="btn btn-outline-danger" onclick="alert('Module List feature - Backend integration required')">
+                                <i class="bi bi-gear"></i> Configure Modules
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Lecturer Assignment -->
+            <div class="col-md-6 col-lg-4">
+                <div class="card admin-card">
+                    <div class="card-body text-center">
+                        <div class="card-icon">
+                            <i class="bi bi-person-badge-fill"></i>
+                        </div>
+                        <h5 class="card-title">Lecturer Assignment</h5>
+                        <p class="card-text">Assign lecturers to modules and manage teaching loads</p>
+                        <div class="d-grid gap-2">
+                            <button class="btn btn-outline-danger" onclick="alert('Assign Lecturer feature - Backend integration required')">
+                                <i class="bi bi-link"></i> Assign to Module
+                            </button>
+                            <button class="btn btn-outline-danger" onclick="alert('Teaching Schedule feature - Backend integration required')">
+                                <i class="bi bi-calendar-check"></i> View Assignments
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Marks Approval -->
+            <div class="col-md-6 col-lg-4">
+                <div class="card admin-card">
+                    <div class="card-body text-center">
+                        <div class="card-icon">
+                            <i class="bi bi-clipboard-check-fill"></i>
+                        </div>
+                        <h5 class="card-title">Marks Approval</h5>
+                        <p class="card-text">Review and approve final marks submitted by lecturers</p>
+                        <div class="d-grid gap-2">
+                            <button class="btn btn-outline-danger" onclick="alert('Pending Approvals feature - Backend integration required')">
+                                <i class="bi bi-eye"></i> Review Marks
+                            </button>
+                            <button class="btn btn-outline-danger" onclick="alert('Approval History feature - Backend integration required')">
+                                <i class="bi bi-clock-history"></i> Approval History
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Transcript Generation -->
+            <div class="col-md-6 col-lg-4">
+                <div class="card admin-card">
+                    <div class="card-body text-center">
+                        <div class="card-icon">
+                            <i class="bi bi-file-earmark-text-fill"></i>
+                        </div>
+                        <h5 class="card-title">Transcript Generation</h5>
+                        <p class="card-text">Generate official academic transcripts and documents</p>
+                        <div class="d-grid gap-2">
+                            <button class="btn btn-outline-danger" onclick="alert('Generate Transcript feature - Backend integration required')">
+                                <i class="bi bi-download"></i> Generate Transcript
+                            </button>
+                            <button class="btn btn-outline-danger" onclick="alert('Document Archive feature - Backend integration required')">
+                                <i class="bi bi-archive"></i> Document Archive
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- System Reports -->
+            <div class="col-md-6 col-lg-4">
+                <div class="card admin-card">
+                    <div class="card-body text-center">
+                        <div class="card-icon">
+                            <i class="bi bi-graph-up-arrow"></i>
+                        </div>
+                        <h5 class="card-title">System Reports</h5>
+                        <p class="card-text">Generate system-wide reports and analytics</p>
+                        <div class="d-grid gap-2">
+                            <button class="btn btn-outline-danger" onclick="alert('Academic Reports feature - Backend integration required')">
+                                <i class="bi bi-bar-chart"></i> Academic Reports
+                            </button>
+                            <button class="btn btn-outline-danger" onclick="alert('System Analytics feature - Backend integration required')">
+                                <i class="bi bi-speedometer2"></i> System Analytics
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- System Configuration -->
+            <div class="col-md-6 col-lg-4">
+                <div class="card admin-card">
+                    <div class="card-body text-center">
+                        <div class="card-icon">
+                            <i class="bi bi-gear-fill"></i>
+                        </div>
+                        <h5 class="card-title">System Configuration</h5>
+                        <p class="card-text">System settings and configuration management</p>
+                        <div class="d-grid gap-2">
+                            <button class="btn btn-outline-danger" onclick="alert('System Settings feature - Backend integration required')">
+                                <i class="bi bi-sliders"></i> System Settings
+                            </button>
+                            <button class="btn btn-outline-danger" onclick="alert('User Management feature - Backend integration required')">
+                                <i class="bi bi-person-gear"></i> User Management
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="col-md-6 col-lg-4">
+                <div class="card admin-card">
+                    <div class="card-body text-center">
+                        <div class="card-icon">
+                            <i class="bi bi-lightning-fill"></i>
+                        </div>
+                        <h5 class="card-title">Quick Actions</h5>
+                        <p class="card-text">Frequently used administrative tasks</p>
+                        <div class="d-grid gap-2">
+                            <button class="btn btn-outline-danger" onclick="alert('Backup System feature - Backend integration required')">
+                                <i class="bi bi-cloud-arrow-down"></i> System Backup
+                            </button>
+                            <button class="btn btn-outline-danger" onclick="alert('Audit Log feature - Backend integration required')">
+                                <i class="bi bi-list-check"></i> View Audit Log
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Activity Section -->
+        <div class="row mt-5">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header bg-white">
+                        <h5 class="mb-0"><i class="bi bi-clock-history me-2"></i>Recent Activity</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="text-center text-muted py-4">
+                            <i class="bi bi-activity display-4"></i>
+                            <p class="mt-2">Activity log will be displayed here once backend is integrated</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

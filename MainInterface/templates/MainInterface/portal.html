@@ -1,10 +1,58 @@
+{% load static %}
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Home Page</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SPU Portal Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
-    <h1>Hello, Sir</h1>
-    <p>Welcome to the Student Portal.</p>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="#">SPU Student System</a>
+            <span class="navbar-text ms-auto">
+                Welcome! | <a href="#" class="text-light">Logout</a>
+            </span>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <h1>SPU STUDENT RECORD SYSTEM</h1>
+        <p class="lead">Welcome to the Student Portal. Select your role to continue.</p>
+        
+        <div class="row mt-4">
+            <div class="col-md-4">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <h5 class="card-title">Student Portal</h5>
+                        <p class="card-text">Access your grades, courses, and academic records.</p>
+                        <a href="#" class="btn btn-primary">Login as Student</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <h5 class="card-title">Lecturer Portal</h5>
+                        <p class="card-text">Manage courses, grades, and student information.</p>
+                        <a href="#" class="btn btn-primary">Login as Lecturer</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <h5 class="card-title">Admin Portal</h5>
+                        <p class="card-text">System administration and management.</p>
+                        <a href="#" class="btn btn-primary">Login as Administrator</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
+
