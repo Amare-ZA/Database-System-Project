@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Student Dashboard</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
     <style>
         body {
             background-color: #f8f9fa;
@@ -51,79 +52,584 @@
         <!-- Options in Cards with Collapse -->
         <div class="row justify-content-center">
             <div class="col-md-8 col-lg-6">
-                
-                <!-- Personal Details Card -->
+                <!-- Profile Management -->
                 <div class="card">
-                    <div class="card-header bg-white" data-bs-toggle="collapse" data-bs-target="#personalDetails" aria-expanded="false">
-                        👤 View/Update Personal Details
+                    <div class="card-header bg-white" data-bs-toggle="collapse" data-bs-target="#profileManagement">
+                        Profile Management
                     </div>
-                    <div id="personalDetails" class="collapse">
+                    <div id="profileManagement" class="collapse">
                         <div class="card-body">
-                            <p class="card-text text-muted">Your personal information will appear here once available.</p>
-                            <div class="placeholder-content text-center py-3">
-                                <div class="spinner-border text-success" role="status">
-                                    <span class="visually-hidden">Loading...</span>
-                                </div>
-                                <p class="mt-2 mb-0">Nothing will show for now if I click</p>
+                            {% if student.profile_picture %}
+                                <img src="{{ student.profile_picture.url }}" alt="Profile Picture" class="img-thumbnail mb-3" style="max-width: 200px;">
+                            {% endif %}
+                            <form method="post" action="{% url 'update_profile' %}" enctype="multipart/form-data">
+                                {% csrf_token %}
+                                <label>Full Name:</label><br>
+                                <input type="text" name="fullname" value="{{ student.user.get_full_name }}" required><br>
+                                <label>Email:</label><br>
+                                <input type="email" name="email" value="{{ student.user.email }}" required><br>
+                                <label>Student Number:</label><br>
+                                <input type="text" value="{{ student.student_number }}" readonly><br>
+                                <label>Phone:</label><br>
+                                <input type="tel" name="phone" value="{{ student.phone_number }}"><br>
+                                <label>Profile Picture:</label><br>
+                                <input type="file" name="profile_picture" accept="image/*"><br>
+                                <button type="submit" class="btn btn-primary mt-3">Update Profile</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Enrolled Courses -->
+                <div class="card">
+                    <div class="card-header bg-white" data-bs-toggle="collapse" data-bs-target="#enrolledCourses">
+                        View Enrolled Courses
+                    </div>
+                    <div id="enrolledCourses" class="collapse">
+                        <div class="card-body">
+                            {% if enrolled_courses %}
+                                <ul class="list-unstyled">
+                                    {% for course in enrolled_courses %}
+                                    <li class="mb-3">
+                                        <h5>{{ course.module.code }} - {{ course.module.name }}</h5>
+                                        <p>Lecturer: {{ course.module.lecturer }}</p>
+                                        <p>Credits: {{ course.module.credits }}</p>
+                                        {% if course.grades %}
+                                            <div class="small">
+                                                <strong>Current Grades:</strong>
+                                                <ul>
+                                                    {% for grade in course.grades %}
+                                                        <li>{{ grade.grade_type }}: {{ grade.grade }}</li>
+                                                    {% endfor %}
+                                                </ul>
+                                            </div>
+                                        {% endif %}
+                                    </li>
+                                    {% endfor %}
+                                </ul>
+                            {% else %}
+                                <p class="text-muted">You are not enrolled in any courses.</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Course Registration -->
+                                <!-- Course Registration -->
+                <div class="card">
+                    <div class="card-header bg-white" data-bs-toggle="collapse" data-bs-target="#courseRegistration">
+                        Course Registration
+                    </div>
+                    <div id="courseRegistration" class="collapse">
+                        <div class="card-body">
+                            {% if messages %}
+                                {% for message in messages %}
+                                    <div class="alert alert-{{ message.tags }}">
+                                        {{ message }}
+                                    </div>
+                                {% endfor %}
+                            {% endif %}
+                            
+                            {% if available_modules %}
+                                <form method="post" action="{% url 'enroll_course' %}">
+                                    {% csrf_token %}
+                                    <div class="mb-3">
+                                        <label for="moduleSelect" class="form-label">Select Module to Enroll</label>
+                                        <select id="moduleSelect" name="module" class="form-select" required>
+                                            <option value="">Select Module</option>
+                                            {% for module in available_modules %}
+                                                <option value="{{ module.id }}">
+                                                    {{ module.code }} - {{ module.name }} ({{ module.lecturer }})
+                                                </option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">Enroll in Module</button>
+                                </form>
+                            {% else %}
+                                <p class="text-muted">No available modules for enrollment at this time.</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Timetable -->
+                <div class="card">
+                    <div class="card-header bg-white" data-bs-toggle="collapse" data-bs-target="#timetable">
+                        Class Timetable
+                    </div>
+                    <div id="timetable" class="collapse">
+                        <div class="card-body">
+                            <table border="1">
+                                <tr>
+                                    <th>Time</th>
+                                    <th>Monday</th>
+                                    <th>Tuesday</th>
+                                    <th>Wednesday</th>
+                                </tr>
+                                {% for course in enrolled_courses %}
+                                    <tr>
+                                        <td>{{ course.module.code }}</td>
+                                        <td>{{ course.module.name }}</td>
+                                        <td>{{ course.module.lecturer }}</td>
+                                    </tr>
+                                {% empty %}
+                                    <tr>
+                                        <td colspan="3" class="text-center">No courses scheduled</td>
+                                    </tr>
+                                {% endfor %}
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Announcements -->
+                <div class="card">
+                    <div class="card-header bg-white" data-bs-toggle="collapse" data-bs-target="#announcements">
+                        Announcements & Notifications
+                    </div>
+                    <div id="announcements" class="collapse">
+                        <div class="card-body">
+                            {% if announcements %}
+                                {% for announcement in announcements %}
+                                    <div class="notification card mb-3">
+                                        <div class="card-body">
+                                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                                <h5 class="card-title mb-0">{{ announcement.title }}</h5>
+                                                <small class="text-muted">{{ announcement.date_posted|date:"F d, Y" }}</small>
+                                            </div>
+                                            {% if announcement.module %}
+                                                <h6 class="card-subtitle mb-2 text-muted">{{ announcement.module.code }} - {{ announcement.module.name }}</h6>
+                                            {% endif %}
+                                            <p class="card-text">{{ announcement.content }}</p>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                                {% if announcements.count > 5 %}
+                                    <div class="text-center mt-3">
+                                        <a href="{% url 'view_announcements' %}" class="btn btn-outline-primary btn-sm">View All Announcements</a>
+                                    </div>
+                                {% endif %}
+                            {% else %}
+                                <p class="text-muted text-center">No announcements at this time.</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Academic Calendar -->
+                <div class="card">
+                    <div class="card-header bg-white" data-bs-toggle="collapse" data-bs-target="#calendar">
+                        Academic Calendar
+                    </div>
+                    <div id="calendar" class="collapse">
+                        <div class="card-body">
+                            <!-- Important Academic Dates -->
+                            <div class="mb-4">
+                                <h5 class="border-bottom pb-2">Important Dates</h5>
+                                <ul class="list-unstyled">
+                                    <li class="mb-2">
+                                        <strong>Semester Start:</strong> 
+                                        <span class="text-primary">Feb 1, 2025</span>
+                                    </li>
+                                    <li class="mb-2">
+                                        <strong>Mid-term Break:</strong> 
+                                        <span class="text-warning">Mar 15-22, 2025</span>
+                                    </li>
+                                    <li class="mb-2">
+                                        <strong>Final Exams:</strong> 
+                                        <span class="text-danger">Jun 1-15, 2025</span>
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <!-- Module Schedule -->
+                            <div>
+                                <h5 class="border-bottom pb-2">Module Schedule</h5>
+                                {% if enrolled_courses %}
+                                    {% for enrollment in enrolled_courses %}
+                                        <div class="module-schedule mb-4">
+                                            <h6 class="text-primary">{{ enrollment.module.code }} - {{ enrollment.module.name }}</h6>
+                                            <div class="ms-3">
+                                                <p class="mb-1"><strong>Lecturer:</strong> {{ enrollment.module.lecturer }}</p>
+                                                <div class="schedule-grid">
+                                                    <table class="table table-sm table-bordered">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>Day</th>
+                                                                <th>Time</th>
+                                                                <th>Type</th>
+                                                                <th>Venue</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <!-- Lectures -->
+                                                            <tr>
+                                                                <td>Monday</td>
+                                                                <td>08:00 - 09:00</td>
+                                                                <td>Lecture</td>
+                                                                <td>LT1</td>
+                                                            </tr>
+                                                            <!-- Tutorials -->
+                                                            <tr>
+                                                                <td>Wednesday</td>
+                                                                <td>10:00 - 11:00</td>
+                                                                <td>Tutorial</td>
+                                                                <td>TB2</td>
+                                                            </tr>
+                                                            <!-- Practicals -->
+                                                            <tr>
+                                                                <td>Friday</td>
+                                                                <td>14:00 - 16:00</td>
+                                                                <td>Practical</td>
+                                                                <td>Lab 2.1</td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+
+                                                <!-- Important Module Dates -->
+                                                <div class="mt-2">
+                                                    <p class="mb-1"><strong>Important Dates:</strong></p>
+                                                    <ul class="small">
+                                                        <li>Test 1: March 15, 2025</li>
+                                                        <li>Assignment Due: April 1, 2025</li>
+                                                        <li>Final Exam: June 5, 2025</li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                {% else %}
+                                    <p class="text-muted">No modules enrolled for this semester.</p>
+                                {% endif %}
+                            </div>
+
+                            <!-- Download Calendar -->
+                            <div class="text-center mt-3">
+                                <button class="btn btn-outline-primary btn-sm">
+                                    <i class="bi bi-calendar-check"></i> Export to Calendar
+                                </button>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Progress Report Card -->
+                <!-- Grades -->
                 <div class="card">
-                    <div class="card-header bg-white" data-bs-toggle="collapse" data-bs-target="#progressReport" aria-expanded="false">
-                        📊 Progress Report
+                    <div class="card-header bg-white" data-bs-toggle="collapse" data-bs-target="#grades">
+                        Grades & Results
                     </div>
-                    <div id="progressReport" class="collapse">
+                    <div id="grades" class="collapse">
                         <div class="card-body">
-                            <p class="card-text text-muted">Your academic progress and performance metrics.</p>
-                            <div class="placeholder-content text-center py-3">
-                                <div class="spinner-border text-success" role="status">
-                                    <span class="visually-hidden">Loading...</span>
+                            {% if enrolled_courses %}
+                                {% for enrollment in enrolled_courses %}
+                                <div class="module-grades mb-4">
+                                    <h5 class="border-bottom pb-2">{{ enrollment.module.code }} - {{ enrollment.module.name }}</h5>
+                                    <div class="table-responsive">
+                                        <table class="table table-hover">
+                                            <thead>
+                                                <tr>
+                                                    <th>Assessment Type</th>
+                                                    <th>Grade</th>
+                                                    <th>Max Marks</th>
+                                                    <th>Percentage</th>
+                                                    <th>Status</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for grade in enrollment.module.grade_set.all %}
+                                                    {% if grade.student == student %}
+                                                    <tr>
+                                                        <td>
+                                                            {% if grade.assignment %}
+                                                                {{ grade.assignment.title }}
+                                                            {% else %}
+                                                                {{ grade.grade_type }}
+                                                            {% endif %}
+                                                        </td>
+                                                        <td>{{ grade.grade }}</td>
+                                                        <td>
+                                                            {% if grade.assignment %}
+                                                                {{ grade.assignment.max_marks }}
+                                                            {% else %}
+                                                                100
+                                                            {% endif %}
+                                                        </td>
+                                                        <td>
+                                                            {% if grade.assignment %}
+                                                                {{ grade.grade|floatformat:1 }}%
+                                                            {% else %}
+                                                                {{ grade.grade|floatformat:1 }}%
+                                                            {% endif %}
+                                                        </td>
+                                                        <td>
+                                                            {% if grade.grade >= 50 %}
+                                                                <span class="badge bg-success">Pass</span>
+                                                            {% else %}
+                                                                <span class="badge bg-danger">Fail</span>
+                                                            {% endif %}
+                                                        </td>
+                                                    </tr>
+                                                    {% endif %}
+                                                {% empty %}
+                                                    <tr>
+                                                        <td colspan="5" class="text-center text-muted">No grades available yet</td>
+                                                    </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                            <tfoot>
+                                                {% with module_grades=enrollment.module.grade_set.all|dictsortreversed:"grade" %}
+                                                {% if module_grades %}
+                                                <tr class="table-info">
+                                                    <td><strong>Module Average</strong></td>
+                                                    <td colspan="2">
+                                                        {% with total_grade=0 grade_count=0 %}
+                                                            {% for grade in module_grades %}
+                                                                {% if grade.student == student %}
+                                                                    {% with total_grade=total_grade|add:grade.grade grade_count=grade_count|add:1 %}
+                                                                        {% if forloop.last %}
+                                                                            {{ total_grade|divisibleby:grade_count|floatformat:1 }}
+                                                                        {% endif %}
+                                                                    {% endwith %}
+                                                                {% endif %}
+                                                            {% endfor %}
+                                                        {% endwith %}
+                                                    </td>
+                                                    <td colspan="2">
+                                                        {% if module_grades.0.grade >= 75 %}
+                                                            <span class="badge bg-success">Distinction</span>
+                                                        {% elif module_grades.0.grade >= 60 %}
+                                                            <span class="badge bg-primary">Merit</span>
+                                                        {% elif module_grades.0.grade >= 50 %}
+                                                            <span class="badge bg-info">Pass</span>
+                                                        {% else %}
+                                                            <span class="badge bg-danger">Fail</span>
+                                                        {% endif %}
+                                                    </td>
+                                                </tr>
+                                                {% endif %}
+                                                {% endwith %}
+                                            </tfoot>
+                                        </table>
+                                    </div>
                                 </div>
-                                <p class="mt-2 mb-0">Nothing will show for now if I click</p>
+                                {% endfor %}
+
+                                <!-- Overall Academic Performance -->
+                                <div class="mt-4">
+                                    <h5 class="border-bottom pb-2">Overall Academic Performance</h5>
+                                    <div class="row g-3">
+                                        <div class="col-md-4">
+                                            <div class="card bg-light">
+                                                <div class="card-body text-center">
+                                                    <h6 class="card-title">GPA</h6>
+                                                    <h3>{{ gpa|default:"0"|floatformat:2 }}</h3>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="card bg-light">
+                                                <div class="card-body text-center">
+                                                    <h6 class="card-title">Credits Earned</h6>
+                                                    <h3>{{ credits_earned|default:"0" }}</h3>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="card bg-light">
+                                                <div class="card-body text-center">
+                                                    <h6 class="card-title">Academic Standing</h6>
+                                                    <h3>
+                                                        {% if gpa >= 3.5 %}
+                                                            <span class="badge bg-success">Excellent</span>
+                                                        {% elif gpa >= 3.0 %}
+                                                            <span class="badge bg-primary">Good</span>
+                                                        {% elif gpa >= 2.0 %}
+                                                            <span class="badge bg-info">Satisfactory</span>
+                                                        {% else %}
+                                                            <span class="badge bg-warning">Warning</span>
+                                                        {% endif %}
+                                                    </h3>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% else %}
+                                <p class="text-muted text-center">No enrolled courses to display grades.</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Attendance -->
+                <div class="card">
+                    <div class="card-header bg-white" data-bs-toggle="collapse" data-bs-target="#attendance">
+                        Attendance Records
+                    </div>
+                    <div id="attendance" class="collapse">
+                        <div class="card-body">
+                            <table border="1">
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Course</th>
+                                    <th>Status</th>
+                                </tr>
+                                <tr>
+                                    <td>2025-02-01</td>
+                                    <td>Mathematics</td>
+                                    <td>Present</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Study Materials -->
+                <div class="card">
+                    <div class="card-header bg-white" data-bs-toggle="collapse" data-bs-target="#materials">
+                        Study Materials
+                    </div>
+                    <div id="materials" class="collapse">
+                        <div class="card-body">
+                            <ul>
+                                <li><a href="#">CSC1015F - Introduction to Python Programming Slides</a></li>
+                                <li><a href="#">CSC1015F - Data Structures Study Guide</a></li>
+                                <li><a href="#">MAM1000W - Calculus Notes</a></li>
+                                <li><a href="#">MAM1000W - Linear Algebra Handbook</a></li>
+                                <li><a href="#">CSC1016S - Object-Oriented Programming Guide</a></li>
+                                <li><a href="#">STA1000S - Probability Theory Resources</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Assignments -->
+                <div class="card">
+                    <div class="card-header bg-white" data-bs-toggle="collapse" data-bs-target="#assignments">
+                        Submit Assignments
+                    </div>
+                    <div id="assignments" class="collapse">
+                        <div class="card-body">
+                            <form>
+                                <select name="assignment">
+                                    <option value="">Select Assignment</option>
+                                    <option value="CSC1015F_A1">CSC1015F - Programming Assignment 1</option>
+                                    <option value="MAM1000W_A2">MAM1000W - Linear Algebra Assignment</option>
+                                    <option value="CSC1016S_P1">CSC1016S - Object-Oriented Project</option>
+                                    <option value="STA1000S_A1">STA1000S - Statistical Analysis Report</option>
+                                </select><br>
+                                <input type="file" name="assignment_file"><br>
+                                <button type="submit">Submit Assignment</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Assignment Deadlines -->
+                <div class="card">
+                    <div class="card-header bg-white" data-bs-toggle="collapse" data-bs-target="#deadlines">
+                        Assignment Deadlines
+                    </div>
+                    <div id="deadlines" class="collapse">
+                        <div class="card-body">
+                            <ul>
+                                <li>Math Assignment 1 - Due: Feb 15, 2025</li>
+                                <li>Physics Lab Report - Due: Mar 1, 2025</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Online Quizzes -->
+                <div class="card">
+                    <div class="card-header bg-white" data-bs-toggle="collapse" data-bs-target="#quizzes">
+                        Online Quizzes
+                    </div>
+                    <div id="quizzes" class="collapse">
+                        <div class="card-body">
+                            <ul>
+                                <li>
+                                    <span>Math Quiz 1</span>
+                                    <button>Start Quiz</button>
+                                </li>
+                                <li>
+                                    <span>Physics Quiz 2</span>
+                                    <button>Start Quiz</button>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Assignment Feedback -->
+                <div class="card">
+                    <div class="card-header bg-white" data-bs-toggle="collapse" data-bs-target="#feedback">
+                        Assignment Feedback
+                    </div>
+                    <div id="feedback" class="collapse">
+                        <div class="card-body">
+                            <div class="feedback-item">
+                                <h5>Math Assignment 1</h5>
+                                <p>Grade: A</p>
+                                <p>Feedback: Excellent work on derivatives!</p>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Semester Results Card -->
+                <!-- Past Papers -->
                 <div class="card">
-                    <div class="card-header bg-white" data-bs-toggle="collapse" data-bs-target="#semesterResults" aria-expanded="false">
-                        📝 View Semester Results
+                    <div class="card-header bg-white" data-bs-toggle="collapse" data-bs-target="#pastPapers">
+                        Past Exam Papers
                     </div>
-                    <div id="semesterResults" class="collapse">
+                    <div id="pastPapers" class="collapse">
                         <div class="card-body">
-                            <p class="card-text text-muted">Access your results for current and previous semesters.</p>
-                            <div class="placeholder-content text-center py-3">
-                                <div class="spinner-border text-success" role="status">
-                                    <span class="visually-hidden">Loading...</span>
-                                </div>
-                                <p class="mt-2 mb-0">Nothing will show for now if I click</p>
-                            </div>
+                            <ul>
+                                <li><a href="#">Mathematics 2024 Final</a></li>
+                                <li><a href="#">Physics 2024 Midterm</a></li>
+                            </ul>
                         </div>
                     </div>
                 </div>
 
-                <!-- Transcript Card -->
+                <!-- Academic Progress -->
                 <div class="card">
-                    <div class="card-header bg-white" data-bs-toggle="collapse" data-bs-target="#transcript" aria-expanded="false">
-                        📄 View/Download Latest Transcript
+                    <div class="card-header bg-white" data-bs-toggle="collapse" data-bs-target="#progress">
+                        Academic Progress
                     </div>
-                    <div id="transcript" class="collapse">
+                    <div id="progress" class="collapse">
                         <div class="card-body">
-                            <p class="card-text text-muted">Download your official academic transcript.</p>
-                            <div class="placeholder-content text-center py-3">
-                                <div class="spinner-border text-success" role="status">
-                                    <span class="visually-hidden">Loading...</span>
-                                </div>
-                                <p class="mt-2 mb-0">Nothing will show for now if I click</p>
-                            </div>
+                            <p>GPA: 3.75</p>
+                            <p>Credits Earned: 60</p>
+                            <p>Credits Required: 120</p>
                         </div>
                     </div>
                 </div>
 
+                <!-- Course Evaluation -->
+                <div class="card">
+                    <div class="card-header bg-white" data-bs-toggle="collapse" data-bs-target="#evaluation">
+                        Course Evaluation
+                    </div>
+                    <div id="evaluation" class="collapse">
+                        <div class="card-body">
+                            <form>
+                                <select name="course">
+                                    <option value="">Select Course</option>
+                                    <option value="1">Mathematics 101</option>
+                                    <option value="2">Physics 201</option>
+                                </select><br>
+                                <label>Rating (1-5):</label>
+                                <input type="number" min="1" max="5"><br>
+                                <label>Comments:</label><br>
+                                <textarea></textarea><br>
+                                <button type="submit">Submit Evaluation</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
